@@ -20,6 +20,8 @@ class SessionManager private constructor(context: Context) {
         private const val USERNAME = "username"
         private const val EMAIL = "email"
         private const val DOB = "date_of_birth"
+        private const val NIM = "nim"
+
         @Volatile
         private var INSTANCE: SessionManager? = null
         fun getInstance(context: Context): SessionManager {
@@ -29,11 +31,12 @@ class SessionManager private constructor(context: Context) {
         }
     }
 
-    fun setAccount(uid: String, username: String, email: String, dob: String) {
+    fun setAccount(uid: String, username: String, email: String, dob: String, nim: String) {
         editor.putString(UID, uid)
         editor.putString(USERNAME, username)
         editor.putString(EMAIL, email)
         editor.putString(DOB, dob)
+        editor.putString(NIM, nim)
         editor.apply()
     }
 
@@ -42,7 +45,8 @@ class SessionManager private constructor(context: Context) {
         val username = sharedPreferences.getString(USERNAME, "")
         val email = sharedPreferences.getString(EMAIL, "")
         val dob = sharedPreferences.getString(DOB, "")
-        return Account(uid!!, username!!, email!!, dob!!)
+        val nim = sharedPreferences.getString(NIM, "")
+        return Account(uid!!, username!!, email!!, nim!!, dob!!)
     }
 
     fun getUID(): String {

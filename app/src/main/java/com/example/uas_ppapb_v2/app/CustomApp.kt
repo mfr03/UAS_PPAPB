@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.uas_ppapb_v2.database.model.Account
 import com.example.uas_ppapb_v2.database.model.AccountRoom
 import com.example.uas_ppapb_v2.database.model.FavoritePost
+import com.example.uas_ppapb_v2.database.model.PlannedPost
 import com.example.uas_ppapb_v2.database.model.Post
 import com.example.uas_ppapb_v2.database.room.UserDatabaseRoom
 import com.example.uas_ppapb_v2.sharedpreferences.SessionManager
@@ -29,7 +30,7 @@ class CustomApp: Application() {
     }
 
     private val authenticationManager by lazy {
-        AuthenticationManager(this)
+        AuthenticationManager()
     }
 
     private val database by lazy {
@@ -37,7 +38,7 @@ class CustomApp: Application() {
     }
 
     private val fireStoreManager by lazy {
-        FireStoreManager(this)
+        FireStoreManager()
     }
 
     fun getAuthManager(): AuthenticationManager {
@@ -49,7 +50,7 @@ class CustomApp: Application() {
     }
 
     fun getRoomDBManager(): RoomDBManager {
-        return RoomDBManager(this)
+        return RoomDBManager()
     }
 
     private fun getAccountUID(): String {
@@ -67,7 +68,7 @@ class CustomApp: Application() {
         firestore = FirebaseFirestore.getInstance()
     }
 
-    inner class AuthenticationManager(customApp: CustomApp) {
+    inner class AuthenticationManager() {
 
         fun setLoggedIn(isLoggedIn: Boolean, isAdmin: Boolean) {
             sessionManager.setLoggedIn(isLoggedIn, isAdmin)
@@ -95,9 +96,9 @@ class CustomApp: Application() {
             loginAccountFirebase(email, password, onSuccess, onFailed)
         }
 
-        fun registerAccount(email: String, password: String, username: String, dateOfBirth: String,
+        fun registerAccount(email: String, password: String, username: String, dateOfBirth: String, nim: String,
                             onSuccess: () -> Unit, onFailed: (Exception) -> Unit) {
-            makeAccountFirebase(email, password, username, dateOfBirth, onSuccess, onFailed)
+            makeAccountFirebase(email, password, username, dateOfBirth, nim, onSuccess, onFailed)
         }
 
         fun logout() {
@@ -117,7 +118,8 @@ class CustomApp: Application() {
                         data?.get("uid").toString(),
                         data?.get("username").toString(),
                         data?.get("email").toString(),
-                        data?.get("dateOfBirth").toString()
+                        data?.get("dateOfBirth").toString(),
+                        data?.get("nim").toString()
                     )
                 }
                 .addOnFailureListener {
@@ -158,17 +160,18 @@ class CustomApp: Application() {
         }
 
 
-        private fun makeAccountFirebase(email: String, password: String, username: String, dateOfBirth: String,
+        private fun makeAccountFirebase(email: String, password: String, username: String, dateOfBirth: String, nim: String,
         onSuccess: () -> Unit, onFailed: (Exception) -> Unit){
             // TODO("NEED TO IMPLEMENT A CHECK ON ADDING TO FIREBASE")
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener { user ->
 
                     val account = Account(
-                        user.user?.uid.toString(),
-                        username,
-                        email,
-                        dateOfBirth
+                        uid = user.user?.uid.toString(),
+                        username = username,
+                        email = email,
+                        nim = nim,
+                        dateOfBirth = dateOfBirth,
                     )
                     accountCollectionReference.add(account)
                         .addOnSuccessListener { documentReference ->
@@ -192,7 +195,7 @@ class CustomApp: Application() {
 
     }
 
-    inner class FireStoreManager(customApp: CustomApp) {
+    inner class FireStoreManager() {
 
         private val postLiveData: MutableLiveData<List<Post>> by lazy {
             MutableLiveData<List<Post>>()
@@ -285,10 +288,12 @@ class CustomApp: Application() {
         }
     }
 
-    inner class RoomDBManager(customApp: CustomApp) {
+    inner class RoomDBManager() {
         private val favoriteDao = database!!.favoritePostDAO()!!
         private val accountRoomDao = database!!.accountRoomDAO()!!
+        private val plannedPostDao = database!!.plannedPostDAO()!!
         private val executorService = Executors.newSingleThreadExecutor()
+
 
         fun insertAccountRoom() {
             executorService.execute {
@@ -298,6 +303,22 @@ class CustomApp: Application() {
 
         fun getUID(): String {
             return getAccountUID()
+        }
+
+        fun insertPlannedPost(plannedPost: PlannedPost) {
+            executorService.execute {
+                plannedPostDao.insertPlannedPost(plannedPost)
+            }
+        }
+
+        fun deletePlannedPost(plannedPost: PlannedPost) {
+            executorService.execute {
+                plannedPostDao.deletePlannedPost(plannedPost)
+            }
+        }
+
+        fun getPlannedPosts(): LiveData<List<PlannedPost>> {
+            return plannedPostDao.getAllPlannedPosts(getUID())
         }
 
         fun getFavorites(): LiveData<List<FavoritePost>> {

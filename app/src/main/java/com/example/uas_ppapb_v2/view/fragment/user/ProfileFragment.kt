@@ -37,6 +37,7 @@ class ProfileFragment : Fragment() {
                 username2.text = username
                 email2.text = email
                 dob2.text = dateOfBirth
+                nim2.text = nim
             }
             logout.setOnClickListener {
                 auth.logout()

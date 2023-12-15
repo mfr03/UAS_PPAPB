@@ -46,6 +46,21 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_layout_nim"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/input_layout_email"
+                android:layout_marginTop="32dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_nim"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="NIM"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/input_layout_dob"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -54,7 +69,7 @@
                 app:layout_constraintBottom_toTopOf="@id/input_layout_password"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/input_layout_email">
+                app:layout_constraintTop_toBottomOf="@+id/input_layout_nim">
 
                 <AutoCompleteTextView
                     android:id="@+id/input_tanggal_lahir"
@@ -135,8 +150,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

@@ -50,12 +50,13 @@ class RegisterFragment : Fragment() {
             }
 
             registerButton.setOnClickListener {
-                if (inputEmail.text.toString().isEmpty() || inputUsername.text.toString().isEmpty() ||inputPassword.text.toString().isEmpty() || inputTanggalLahir.text.toString().isEmpty()) {
+                if (inputEmail.text.toString().isEmpty() || inputUsername.text.toString().isEmpty() ||inputPassword.text.toString().isEmpty()
+                    || inputTanggalLahir.text.toString().isEmpty() || inputNim.text.toString().isEmpty()) {
                     Snackbar.make(binding.root, "Mohon isi bagan yang kosong", Snackbar.LENGTH_SHORT).setAnchorView(registerButton).show()
                 } else {
                     if(checkValidity(inputEmail.text.toString(), inputTanggalLahir.text.toString())) {
                         // TODO("NEED TO IMPLEMENT FAILED OR SUCCESS CHECK ON REGISTER ACCOUNT")
-                        auth.registerAccount(inputEmail.text.toString(), inputPassword.text.toString(), inputUsername.text.toString(), inputTanggalLahir.text.toString(),
+                        auth.registerAccount(inputEmail.text.toString(), inputPassword.text.toString(), inputUsername.text.toString(), inputTanggalLahir.text.toString(), inputNim.text.toString(),
                             onSuccess = {
                                 Snackbar.make(binding.root, "Register Success", Snackbar.LENGTH_SHORT).setAnchorView(registerButton).show()
                                 tabLayoutListener.goToNextFragment(0)
