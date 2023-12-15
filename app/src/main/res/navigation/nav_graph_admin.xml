@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_admin"
+    app:startDestination="@id/homeAdminFragment">
+
+    <fragment
+        android:id="@+id/homeAdminFragment"
+        android:name="com.example.uas_ppapb_v2.view.fragment.admin.HomeAdminFragment"
+        android:label="fragment_dashboard_admin"
+        tools:layout="@layout/fragment_home_admin" >
+        <action
+            android:id="@+id/action_homeAdminFragment_to_postInputFragment"
+            app:destination="@id/postInputFragment"
+            app:popUpTo="@id/homeAdminFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
+    <fragment
+        android:id="@+id/adminAddFragment"
+        android:name="com.example.uas_ppapb_v2.view.fragment.admin.AddAdminFragment"
+        android:label="fragment_admin_add"
+        tools:layout="@layout/fragment_add_admin" />
+    <fragment
+        android:id="@+id/postInputFragment"
+        android:name="com.example.uas_ppapb_v2.view.fragment.admin.PostInputFragment"
+        android:label="fragment_post_input"
+        tools:layout="@layout/fragment_post_input" >
+        <action
+            android:id="@+id/action_postInputFragment_to_dashboardAdminFragment"
+            app:destination="@id/homeAdminFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragmentAdmin"
+        android:name="com.example.uas_ppapb_v2.view.fragment.user.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
+</navigation>

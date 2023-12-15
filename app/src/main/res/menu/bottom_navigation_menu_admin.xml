@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/homeAdminFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/baseline_home_orange_36"
+        app:showAsAction="always"
+        android:title="Home" />
+    <item
+        android:id="@+id/adminAddFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/baseline_person_add_alt_1_36"
+        app:showAsAction="always"
+        android:title="Add Admin" />
+    <item
+        android:id="@+id/postInputFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/baseline_input_36"
+        app:showAsAction="always"
+        android:title="Input Post" />
+    <item
+        android:id="@+id/profileFragmentAdmin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/baseline_person_24"
+        app:showAsAction="always"
+        android:title="Profile" />
+</menu>
