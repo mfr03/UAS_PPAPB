@@ -12,7 +12,6 @@ import com.example.uas_ppapb_v2.R
 import com.example.uas_ppapb_v2.app.CustomApp
 import com.example.uas_ppapb_v2.database.model.Post
 import com.example.uas_ppapb_v2.databinding.FragmentPostInputBinding
-import com.example.uas_ppapb_v2.recyclerview.SpinnerAdapter
 import com.google.android.material.snackbar.Snackbar
 
 

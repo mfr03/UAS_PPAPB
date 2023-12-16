@@ -15,6 +15,7 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.dataObjects
 import java.util.concurrent.Executors
 
 class CustomApp: Application() {
@@ -70,6 +71,9 @@ class CustomApp: Application() {
 
     inner class AuthenticationManager() {
 
+        private val adminsLiveData: MutableLiveData<List<Triple<String, String, String>>> by lazy {
+            MutableLiveData<List<Triple<String, String, String>>>()
+        }
         fun setLoggedIn(isLoggedIn: Boolean, isAdmin: Boolean) {
             sessionManager.setLoggedIn(isLoggedIn, isAdmin)
         }
@@ -82,6 +86,23 @@ class CustomApp: Application() {
             return sessionManager.isAdmin()
         }
 
+        fun getAdmins(onSuccess: (MutableLiveData<List<Triple<String, String, String>>>) -> Unit) {
+            val temp: MutableList<Triple<String, String, String>> = mutableListOf()
+            if(sessionManager.isAdmin()) {
+                accountCollectionReference.whereEqualTo("type", "admin").get()
+                    .addOnSuccessListener {
+                            query ->
+                        for(document in query) {
+                            val data = document.data
+                            Log.d("ADMIN", data.get("username").toString())
+                            temp.add(Triple(data.get("uid").toString(), data.get("username").toString(), data.get("email").toString()))
+                        }
+                        adminsLiveData.postValue(temp)
+                        onSuccess(adminsLiveData)
+                    }
+            }
+
+        }
 
         fun returnAccount(): Account {
             return sessionManager.getAccount()
@@ -96,9 +117,16 @@ class CustomApp: Application() {
             loginAccountFirebase(email, password, onSuccess, onFailed)
         }
 
-        fun registerAccount(email: String, password: String, username: String, dateOfBirth: String, nim: String,
+        fun registerAccount(email: String, password: String, username: String, dateOfBirth: String, nim: String, bypass: Boolean = false,
                             onSuccess: () -> Unit, onFailed: (Exception) -> Unit) {
-            makeAccountFirebase(email, password, username, dateOfBirth, nim, onSuccess, onFailed)
+            if(!bypass) {
+                makeAccountFirebase(email, password, username, dateOfBirth, nim, onSuccess = onSuccess, onFailed = onFailed)
+            } else if (bypass && sessionManager.isAdmin()) {
+                makeAccountFirebase(email, password, username, dateOfBirth, nim, bypass = true, onSuccess, onFailed)
+            } else {
+                onFailed(java.lang.Exception("You are not an admin"))
+            }
+
         }
 
         fun logout() {
@@ -137,7 +165,6 @@ class CustomApp: Application() {
                         .addOnSuccessListener {
                                 document ->
                             if(document.isEmpty) {
-
                                 onFailed(Exception("Account not found"))
                             } else {
                                 val data = document.documents[0].data
@@ -160,19 +187,31 @@ class CustomApp: Application() {
         }
 
 
-        private fun makeAccountFirebase(email: String, password: String, username: String, dateOfBirth: String, nim: String,
+        private fun makeAccountFirebase(email: String, password: String, username: String, dateOfBirth: String, nim: String, bypass: Boolean = false,
         onSuccess: () -> Unit, onFailed: (Exception) -> Unit){
             // TODO("NEED TO IMPLEMENT A CHECK ON ADDING TO FIREBASE")
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener { user ->
+                    val account: Account
+                    if(bypass) {
+                        account = Account(
+                            uid = user.user?.uid.toString(),
+                            username = username,
+                            email = email,
+                            nim = nim,
+                            type = "admin",
+                            dateOfBirth = dateOfBirth,
+                        )
+                    } else {
+                        account = Account(
+                            uid = user.user?.uid.toString(),
+                            username = username,
+                            email = email,
+                            nim = nim,
+                            dateOfBirth = dateOfBirth,
+                        )
+                    }
 
-                    val account = Account(
-                        uid = user.user?.uid.toString(),
-                        username = username,
-                        email = email,
-                        nim = nim,
-                        dateOfBirth = dateOfBirth,
-                    )
                     accountCollectionReference.add(account)
                         .addOnSuccessListener { documentReference ->
                             documentReference.set(account)
@@ -190,9 +229,7 @@ class CustomApp: Application() {
                 .addOnFailureListener {
                     onFailed(it)
                 }
-
         }
-
     }
 
     inner class FireStoreManager() {

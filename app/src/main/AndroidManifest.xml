@@ -17,17 +17,24 @@
 
         <activity
             android:name=".activity.PostActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            />
         <activity
             android:name=".activity.DashboardAdminActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            />
         <activity
             android:name=".activity.DashboardActivity"
             android:exported="false"
-            android:theme="@style/Theme.UAS_PPAPB_V2.WithActionBar"/>
+            android:theme="@style/Theme.UAS_PPAPB_V2.WithActionBar"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            />
         <activity
             android:name=".activity.MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize|stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

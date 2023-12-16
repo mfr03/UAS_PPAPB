@@ -11,6 +11,7 @@ import com.example.uas_ppapb_v2.R
 import com.example.uas_ppapb_v2.app.CustomApp
 import com.example.uas_ppapb_v2.databinding.FragmentHomeAdminBinding
 import com.example.uas_ppapb_v2.recyclerview.AdminPostAdapter
+import com.example.uas_ppapb_v2.view.fragment.user.ConformationDialog
 import com.google.android.material.snackbar.Snackbar
 
 class HomeAdminFragment : Fragment() {
@@ -42,9 +43,15 @@ class HomeAdminFragment : Fragment() {
                                 bundle.putString("postID", post.id)
                                 findNavController().navigate(R.id.action_homeAdminFragment_to_postInputFragment, bundle)
                             },
-                            onDelete = {post ->fireStoreManager.deletePost(post,
-                                onSuccess = {Snackbar.make(root, "Post deleted", Snackbar.LENGTH_SHORT).show()},
-                                onFailed = {Snackbar.make(root, "Failed to be deleted", Snackbar.LENGTH_SHORT).show()})
+                            onDelete = {post ->
+                                val conformationDialog = ConformationDialog {
+                                    fireStoreManager.deletePost(post,
+                                        onSuccess = {
+                                            Snackbar.make(binding.root, "Post Deleted", Snackbar.LENGTH_SHORT).show()
+                                        },
+                                        onFailed = {Snackbar.make(binding.root, "Failed to be deleted", Snackbar.LENGTH_SHORT).show()})
+                                }
+                                conformationDialog.show(parentFragmentManager, "ConformationDialog")
                             }
                         )
                         layoutManager = LinearLayoutManager(requireContext())

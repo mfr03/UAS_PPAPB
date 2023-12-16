@@ -1,5 +1,6 @@
 package com.example.uas_ppapb_v2.view.fragment
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.uas_ppapb_v2.activity.DashboardActivity
 import com.example.uas_ppapb_v2.activity.DashboardAdminActivity
+import com.example.uas_ppapb_v2.activity.listener.LoadingListener
 import com.example.uas_ppapb_v2.app.CustomApp
 import com.example.uas_ppapb_v2.databinding.FragmentLoginBinding
 import com.google.android.material.snackbar.Snackbar
@@ -42,7 +44,6 @@ class LoginFragment : Fragment() {
         }
 
         with(binding) {
-
             loginButton.setOnClickListener {
 
                 val email = inputLoginEmail.text.toString()
@@ -50,20 +51,24 @@ class LoginFragment : Fragment() {
                 if(email.isEmpty() || password.isEmpty()) {
                     Snackbar.make(view, "Email dan password tidak boleh kosong", Snackbar.LENGTH_SHORT).show()
                 } else {
+                    (requireActivity() as LoadingListener).showLoadingScreen()
                     auth.loginAccount(email, password,
                         onSuccess = { isAdmin ->
                             if(isAdmin) {
                                 auth.getAccount()
                                 auth.setLoggedIn(true, isAdmin = true)
+                                (requireActivity() as LoadingListener).hideLoadingScreen()
                                 val intent = Intent(requireContext(), DashboardAdminActivity::class.java)
                                 startActivity(intent)
                             } else {
                                 auth.getAccount()
                                 auth.setLoggedIn(true, isAdmin = false)
+                                (requireActivity() as LoadingListener).hideLoadingScreen()
                                 val intent = Intent(requireContext(), DashboardActivity::class.java)
                                 startActivity(intent)
                             }
                         }, onFailed = {
+                            (requireActivity() as LoadingListener).hideLoadingScreen()
                             Snackbar.make(view, it.message.toString(), Snackbar.LENGTH_SHORT).show()
                         })
                 }

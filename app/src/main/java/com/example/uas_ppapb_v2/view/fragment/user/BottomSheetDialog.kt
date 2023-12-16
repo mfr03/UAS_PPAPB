@@ -1,4 +1,4 @@
-package com.example.uas_ppapb_v2.view.fragment
+package com.example.uas_ppapb_v2.view.fragment.user
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -17,7 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import java.util.Calendar
 
-class BottomSheetDialog(private val post: Post): BottomSheetDialogFragment() {
+class BottomSheetDialog(private val post: Post, private val onSuccess: () -> Unit): BottomSheetDialogFragment() {
 
     private val binding by lazy {
         BottomSheetDialogBinding.inflate(layoutInflater)
@@ -67,14 +67,16 @@ class BottomSheetDialog(private val post: Post): BottomSheetDialogFragment() {
                         startingStation = post.startingStation,
                         endStation = post.endStation,
                         overviewDescription = post.overviewDescription,
+                        shortDescription = post.shortDescription,
                         price = post.price,
                         lengthOfStay = post.lengthOfStay,
                         imageURI = post.imageURI,
+                        tag = post.tag,
                         plannedDate = inputDate.text.toString(),
                         plannedTime = inputTime.text.toString()
                     )
                 )
-                Snackbar.make(root, "Added to plan", Snackbar.LENGTH_SHORT).show()
+                onSuccess()
                 dismiss()
             }
         }

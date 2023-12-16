@@ -1,42 +1,39 @@
-package com.example.uas_ppapb_v2.view.fragment
+package com.example.uas_ppapb_v2.view.fragment.admin
 
 import android.app.DatePickerDialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
-import com.example.uas_ppapb_v2.R
-import com.example.uas_ppapb_v2.activity.MainActivity
-import com.example.uas_ppapb_v2.activity.listener.LoadingListener
-import com.example.uas_ppapb_v2.activity.listener.TabLayoutListener
 import com.example.uas_ppapb_v2.app.CustomApp
-import com.example.uas_ppapb_v2.databinding.FragmentRegisterBinding
+import com.example.uas_ppapb_v2.databinding.RegisterAdminDialogBinding
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
 import org.apache.commons.validator.routines.EmailValidator
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
+class RegisterAdminDialog(private val onSuccess: () -> Unit): BottomSheetDialogFragment() {
 
-class RegisterFragment : Fragment() {
-
-    private val binding by lazy {
-        FragmentRegisterBinding.inflate(layoutInflater)
+    private val binding: RegisterAdminDialogBinding by lazy {
+        RegisterAdminDialogBinding.inflate(layoutInflater)
     }
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return binding.root
     }
+
     @Suppress("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val auth = (requireActivity().application as CustomApp).run { getAuthManager() }
-        val tabLayoutListener = requireActivity() as TabLayoutListener
 
         with(binding) {
             inputTanggalLahir.setOnTouchListener { v, event ->
@@ -57,23 +54,22 @@ class RegisterFragment : Fragment() {
                 } else {
                     if(checkValidity(inputEmail.text.toString(), inputTanggalLahir.text.toString())) {
                         // TODO("NEED TO IMPLEMENT FAILED OR SUCCESS CHECK ON REGISTER ACCOUNT")
-                        (requireActivity() as LoadingListener).showLoadingScreen()
                         auth.registerAccount(inputEmail.text.toString(), inputPassword.text.toString(), inputUsername.text.toString(), inputTanggalLahir.text.toString(), inputNim.text.toString(),
+                            bypass = true,
                             onSuccess = {
-                                (requireActivity() as LoadingListener).hideLoadingScreen()
-                                Snackbar.make(binding.root, "Register Success", Snackbar.LENGTH_SHORT).setAnchorView(registerButton).show()
-                                tabLayoutListener.goToNextFragment(0)
+                                onSuccess()
+                                dismiss()
                             },
                             onFailed = {
-                                (requireActivity() as LoadingListener).hideLoadingScreen()
                                 Snackbar.make(binding.root, "Register Failed : ${it.message}", Snackbar.LENGTH_SHORT).setAnchorView(registerButton).show()
                             })
                     }
                 }
             }
-
         }
     }
+
+
 
     private fun showDatePickerDialog(element: AutoCompleteTextView) {
         val calendar = Calendar.getInstance()

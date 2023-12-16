@@ -2,13 +2,12 @@ package com.example.uas_ppapb_v2.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import coil.load
 import com.example.uas_ppapb_v2.R
 import com.example.uas_ppapb_v2.app.CustomApp
 import com.example.uas_ppapb_v2.database.model.FavoritePost
 import com.example.uas_ppapb_v2.databinding.ActivityPostBinding
-import com.example.uas_ppapb_v2.view.fragment.BottomSheetDialog
+import com.example.uas_ppapb_v2.view.fragment.user.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import java.util.Calendar
 
@@ -108,7 +107,9 @@ class PostActivity : AppCompatActivity() {
                 }
             }
             addToPlanButton.setOnClickListener {
-                val bottomSheetFragment = BottomSheetDialog()
+                val bottomSheetFragment = BottomSheetDialog(post) {
+                    Snackbar.make(root, "Added to plan", Snackbar.LENGTH_SHORT).show()
+                }
                 bottomSheetFragment.show(supportFragmentManager, "BottomSheetDialog")
             }
         }

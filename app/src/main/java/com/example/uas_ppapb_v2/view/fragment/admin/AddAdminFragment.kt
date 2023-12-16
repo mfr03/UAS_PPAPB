@@ -1,60 +1,74 @@
 package com.example.uas_ppapb_v2.view.fragment.admin
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.uas_ppapb_v2.R
+import com.example.uas_ppapb_v2.app.CustomApp
+import com.example.uas_ppapb_v2.databinding.FragmentAddAdminBinding
+import com.example.uas_ppapb_v2.recyclerview.AccountAdminAdapter
+import com.google.android.material.snackbar.Snackbar
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [AddAdminFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class AddAdminFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+    private val binding: FragmentAddAdminBinding by lazy {
+        FragmentAddAdminBinding.inflate(layoutInflater)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_admin, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AddAdminFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AddAdminFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val authManager = (requireActivity().application as CustomApp).getAuthManager()
+        with(binding) {
+            addAdmin.setOnClickListener {
+                val bottomSheetDialog = RegisterAdminDialog {
+                    Snackbar.make(binding.root, "Register Admin Success", Snackbar.LENGTH_SHORT).show()
+
+                    authManager.getAdmins { data->
+                        if (data != null) {
+                            data.observe(viewLifecycleOwner) {
+                                Log.d("AddAdminFragment", "onViewCreated: $it")
+                                if (it != null) {
+                                    rvadd.apply {
+                                        adapter = AccountAdminAdapter(it)
+                                        layoutManager = LinearLayoutManager(requireContext())
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                }
+                bottomSheetDialog.show(parentFragmentManager, "RegisterAdminDialog")
+            }
+            authManager.getAdmins { data->
+                if (data != null) {
+                    data.observe(viewLifecycleOwner) {
+                        Log.d("AddAdminFragment", "onViewCreated: $it")
+                        if (it != null) {
+                            rvadd.apply {
+                                adapter = AccountAdminAdapter(it)
+                                layoutManager = LinearLayoutManager(requireContext())
+                            }
+
+                        }
+                    }
                 }
             }
+        }
     }
+
+
+
 }
