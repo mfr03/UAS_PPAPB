@@ -54,16 +54,40 @@
             android:padding="16dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutSetNotificationTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:clickable="false"
+        app:boxBackgroundMode="outline"
+        app:layout_constraintTop_toBottomOf="@+id/input_layout_time"
+        tools:layout_editor_absoluteX="16dp">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/setNotificationTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:clickable="true"
+            android:hint="Waktu Notifikasi"
+            android:drawableRight="@drawable/baseline_access_time_24"
+            android:inputType="none"
+            android:padding="16dp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
     <Button
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/add_to_your_plan"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_layout_time"
+        app:layout_constraintTop_toBottomOf="@+id/layoutSetNotificationTime"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView

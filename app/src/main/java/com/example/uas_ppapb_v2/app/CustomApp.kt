@@ -1,6 +1,9 @@
 package com.example.uas_ppapb_v2.app
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.os.Build
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -67,6 +70,20 @@ class CustomApp: Application() {
         super.onCreate()
         FirebaseApp.initializeApp(this)
         firestore = FirebaseFirestore.getInstance()
+        createNotificationChannel()
+    }
+
+    private fun createNotificationChannel() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "1",
+                "extras",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            channel.description = "Planned post notifications"
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager.createNotificationChannel(channel)
+        }
     }
 
     inner class AuthenticationManager() {

@@ -9,15 +9,12 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayoutFragmentHome"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/popularDestinationLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -29,6 +26,7 @@
                 style="@style/Text.Header.Sub"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
                 android:text="Popular Destinations"
                 android:textColor="@color/black"
@@ -53,7 +51,9 @@
             android:id="@+id/tabButtonLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -104,10 +104,10 @@
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/activitiesTab"
+                        style="@style/CustomCircularImageView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/baseline_activities_orange_36"
-                        style="@style/CustomCircularImageView"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -146,10 +146,10 @@
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/toursTab"
+                        style="@style/CustomCircularImageView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/baseline_tour_orange_36"
-                        style="@style/CustomCircularImageView"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -175,10 +175,10 @@
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/rentalsTab"
+                        style="@style/CustomCircularImageView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/baseline_rentals_orange_36"
-                        style="@style/CustomCircularImageView"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -202,8 +202,11 @@
 
         <View
             android:id="@+id/heWillNotDivideUs"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="2dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
             android:background="@color/primary_text_gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

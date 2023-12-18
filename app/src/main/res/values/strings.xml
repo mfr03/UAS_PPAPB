@@ -13,4 +13,13 @@
         <item>Tours</item>
         <item>Rentals</item>
     </array>
+
+    <array name="times">
+        <item>30 menit sebelumnya</item>
+        <item>1 jam sebelumnya</item>
+        <item>4 jam sebelumnya</item>
+        <item>8 jam sebelumnya</item>
+        <item>16 jam sebelumnya</item>
+        <item>24 jam sebelumnya</item>
+    </array>
 </resources>

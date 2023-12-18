@@ -22,7 +22,7 @@ class PlannedPostAdapter(private val postList: List<PlannedPost>, private val on
                 }
 
                 dateAndTime.text = "Date: ${post.plannedDate} Time: ${post.plannedTime}"
-
+                notificationDateAndTime.text = "Will be notified at: ${post.notificationDate} on ${post.notificationTime}"
                 deleteButton.setOnClickListener {
                     onDelete(post)
                 }

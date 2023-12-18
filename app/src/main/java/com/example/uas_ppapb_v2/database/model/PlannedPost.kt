@@ -57,5 +57,11 @@ data class PlannedPost(
     var plannedDate: String = "",
 
     @ColumnInfo(name = "plannedTime")
-    var plannedTime: String = ""
+    var plannedTime: String = "",
+
+    @ColumnInfo(name = "notificationTime")
+    var notificationTime: String = "",
+
+    @ColumnInfo(name = "notificationDate")
+    var notificationDate: String = "",
 )

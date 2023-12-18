@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import com.example.uas_ppapb_v2.R
 import com.example.uas_ppapb_v2.app.CustomApp
@@ -22,6 +23,8 @@ class BottomSheetDialog(private val post: Post, private val onSuccess: () -> Uni
     private val binding by lazy {
         BottomSheetDialogBinding.inflate(layoutInflater)
     }
+    private var selectTime: String = ""
+    private var selectDate: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,6 +40,19 @@ class BottomSheetDialog(private val post: Post, private val onSuccess: () -> Uni
         val roomDBManager = (requireActivity().application as CustomApp).getRoomDBManager()
 
         with(binding) {
+
+
+            setNotificationTime.setOnTouchListener { v, event ->
+                if(event.action == MotionEvent.ACTION_UP) {
+                    val rightDrawable = (v as AutoCompleteTextView).compoundDrawables[2]
+                    if(event.rawX >= (v.right - rightDrawable.bounds.width())) {
+                        showTimePickerDialog(setNotificationTime, true)
+                        return@setOnTouchListener true
+                    }
+                }
+                false
+            }
+
             inputDate.setOnTouchListener { v, event ->
                 if(event.action == MotionEvent.ACTION_UP) {
                     val rightDrawable = (v as AutoCompleteTextView).compoundDrawables[2]
@@ -73,7 +89,9 @@ class BottomSheetDialog(private val post: Post, private val onSuccess: () -> Uni
                         imageURI = post.imageURI,
                         tag = post.tag,
                         plannedDate = inputDate.text.toString(),
-                        plannedTime = inputTime.text.toString()
+                        plannedTime = inputTime.text.toString(),
+                        notificationTime = selectTime,
+                        notificationDate = selectDate
                     )
                 )
                 onSuccess()
@@ -82,7 +100,7 @@ class BottomSheetDialog(private val post: Post, private val onSuccess: () -> Uni
         }
     }
 
-    private fun showDatePickerDialog(element: AutoCompleteTextView) {
+    private fun showDatePickerDialog(element: AutoCompleteTextView, planned: Boolean = false) {
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH)
@@ -90,14 +108,21 @@ class BottomSheetDialog(private val post: Post, private val onSuccess: () -> Uni
 
         val datePickerDialog = DatePickerDialog(this.requireContext(), DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
             val selectedDate = "$dayOfMonth/${monthOfYear + 1}/$year"
-            element.setText(selectedDate)
-        }, year, month, day)
+            if(!planned) {
+                element.setText(selectedDate)
+            } else {
+                selectDate = selectedDate
+                element.setText("$selectedDate || $selectTime")
+            }
 
-        datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000
+        }, year, month, day)
+        if(!planned) {
+            datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000
+        }
         datePickerDialog.show()
     }
 
-    private fun showTimePickerDialog(element: AutoCompleteTextView) {
+    private fun showTimePickerDialog(element: AutoCompleteTextView, planned: Boolean = false) {
         val calendar = Calendar.getInstance()
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
@@ -113,11 +138,18 @@ class BottomSheetDialog(private val post: Post, private val onSuccess: () -> Uni
                     element.setText(selectedTime)
                 }
 
+                if(planned) {
+                    selectTime = element.text.toString()
+                    showDatePickerDialog(element, true)
+                }
+
+
             },
             hour,
             minute,
             true // Set to true for 24-hour format, false for 12-hour format
         )
+
         timePickerDialog.show()
     }
 }

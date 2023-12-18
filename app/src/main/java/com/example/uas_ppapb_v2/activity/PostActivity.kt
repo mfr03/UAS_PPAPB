@@ -1,5 +1,9 @@
 package com.example.uas_ppapb_v2.activity
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import coil.load
@@ -7,6 +11,7 @@ import com.example.uas_ppapb_v2.R
 import com.example.uas_ppapb_v2.app.CustomApp
 import com.example.uas_ppapb_v2.database.model.FavoritePost
 import com.example.uas_ppapb_v2.databinding.ActivityPostBinding
+import com.example.uas_ppapb_v2.notifications.AlarmReceiver
 import com.example.uas_ppapb_v2.view.fragment.user.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import java.util.Calendar
@@ -101,6 +106,7 @@ class PostActivity : AppCompatActivity() {
                             userUID = roomDBManager.getUID()
                         )
                     )
+                    scheduleNotifications(10000)
                     favorited = false
                     favoriteButton.setImageDrawable(getDrawable(R.drawable.baseline_favorite_border_36))
                     Snackbar.make(root, "Removed from favorites", Snackbar.LENGTH_SHORT).show()
@@ -114,6 +120,14 @@ class PostActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun scheduleNotifications(timeInMillis: Long) {
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(this, AlarmReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+
+        alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
     }
 
     private fun checkIfBeenFavorited() {
