@@ -13,15 +13,15 @@ import com.example.uas_ppapb_v2.R
 class AlarmReceiver: BroadcastReceiver() {
     override fun onReceive(p0: Context?, p1: Intent?) {
         if (p0 != null) {
-            showNotification(p0, "Your notification title", "Your notification content")
+            showNotification(p0, p1!!)
         }
     }
 
-    private fun showNotification(context: Context, title: String, content: String  ) {
+    private fun showNotification(context: Context, intent: Intent ) {
         val builder = NotificationCompat.Builder(context, "1")
             .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle(title)
-            .setContentText(content)
+            .setContentTitle(intent.getStringExtra("title"))
+            .setContentText(intent.getStringExtra("content"))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
         with(NotificationManagerCompat.from(context)) {

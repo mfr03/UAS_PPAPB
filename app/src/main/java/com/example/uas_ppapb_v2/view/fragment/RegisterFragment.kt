@@ -1,13 +1,19 @@
 package com.example.uas_ppapb_v2.view.fragment
 
 import android.app.DatePickerDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
+import android.widget.TextView
 import com.example.uas_ppapb_v2.R
 import com.example.uas_ppapb_v2.activity.MainActivity
 import com.example.uas_ppapb_v2.activity.listener.LoadingListener
@@ -39,6 +45,9 @@ class RegisterFragment : Fragment() {
         val tabLayoutListener = requireActivity() as TabLayoutListener
 
         with(binding) {
+
+            spannableClick(alreadyAccount, "Login", 0)
+
             inputTanggalLahir.setOnTouchListener { v, event ->
                 if(event.action == MotionEvent.ACTION_UP) {
                     val rightDrawable = (v as AutoCompleteTextView).compoundDrawables[2]
@@ -56,7 +65,6 @@ class RegisterFragment : Fragment() {
                     Snackbar.make(binding.root, "Mohon isi bagan yang kosong", Snackbar.LENGTH_SHORT).setAnchorView(registerButton).show()
                 } else {
                     if(checkValidity(inputEmail.text.toString(), inputTanggalLahir.text.toString())) {
-                        // TODO("NEED TO IMPLEMENT FAILED OR SUCCESS CHECK ON REGISTER ACCOUNT")
                         (requireActivity() as LoadingListener).showLoadingScreen()
                         auth.registerAccount(inputEmail.text.toString(), inputPassword.text.toString(), inputUsername.text.toString(), inputTanggalLahir.text.toString(), inputNim.text.toString(),
                             onSuccess = {
@@ -73,6 +81,28 @@ class RegisterFragment : Fragment() {
             }
 
         }
+    }
+
+    private fun spannableClick(tv: TextView, clickString: String, next: Int? = null) {
+        val spannableString = SpannableString(tv.text)
+        val clickableSpan = object : ClickableSpan(){
+            override fun onClick(widget: View) {
+                if(clickString == "Forgot Password?") {
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+                    startActivity(intent)
+                } else {
+                    (requireActivity() as TabLayoutListener).goToNextFragment(next!!)
+                }
+            }
+        }
+
+        val int1 = tv.text.toString().indexOf(clickString)
+        val int2 = int1 + clickString.length
+        spannableString.setSpan(clickableSpan, int1, int2, SpannableString.SPAN_INCLUSIVE_EXCLUSIVE)
+
+        tv.text = spannableString
+        tv.movementMethod = LinkMovementMethod.getInstance()
     }
 
     private fun showDatePickerDialog(element: AutoCompleteTextView) {

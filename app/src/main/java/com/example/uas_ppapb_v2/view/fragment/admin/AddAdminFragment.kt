@@ -7,10 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.uas_ppapb_v2.R
 import com.example.uas_ppapb_v2.app.CustomApp
 import com.example.uas_ppapb_v2.databinding.FragmentAddAdminBinding
 import com.example.uas_ppapb_v2.recyclerview.AccountAdminAdapter
+import com.example.uas_ppapb_v2.view.fragment.admin.dialog.RegisterAdminDialog
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -34,17 +34,14 @@ class AddAdminFragment : Fragment() {
             addAdmin.setOnClickListener {
                 val bottomSheetDialog = RegisterAdminDialog {
                     Snackbar.make(binding.root, "Register Admin Success", Snackbar.LENGTH_SHORT).show()
-
                     authManager.getAdmins { data->
                         if (data != null) {
                             data.observe(viewLifecycleOwner) {
-                                Log.d("AddAdminFragment", "onViewCreated: $it")
                                 if (it != null) {
                                     rvadd.apply {
                                         adapter = AccountAdminAdapter(it)
                                         layoutManager = LinearLayoutManager(requireContext())
                                     }
-
                                 }
                             }
                         }
@@ -52,16 +49,19 @@ class AddAdminFragment : Fragment() {
                 }
                 bottomSheetDialog.show(parentFragmentManager, "RegisterAdminDialog")
             }
+
             authManager.getAdmins { data->
                 if (data != null) {
-                    data.observe(viewLifecycleOwner) {
-                        Log.d("AddAdminFragment", "onViewCreated: $it")
-                        if (it != null) {
-                            rvadd.apply {
-                                adapter = AccountAdminAdapter(it)
-                                layoutManager = LinearLayoutManager(requireContext())
-                            }
+                    // check if viewlifecycleowner exist
+                    if(getView() != null) {
+                        data.observe(viewLifecycleOwner) {
+                            if (it != null) {
+                                rvadd.apply {
+                                    adapter = AccountAdminAdapter(it)
+                                    layoutManager = LinearLayoutManager(requireContext())
+                                }
 
+                            }
                         }
                     }
                 }

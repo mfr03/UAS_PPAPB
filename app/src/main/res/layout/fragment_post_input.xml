@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constraintLayoutPostInputFragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".view.fragment.admin.PostInputFragment">
 
 
@@ -27,14 +27,34 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <androidx.cardview.widget.CardView
+            android:id="@+id/imageContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/fragmentPostInputTitle">
+
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:elevation="8dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/bali" />
+        </androidx.cardview.widget.CardView>
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayoutPostInputFragmentDestination"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            app:boxStrokeColor="@color/primary_orange"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/fragmentPostInputTitle">
+            app:layout_constraintTop_toBottomOf="@+id/imageContainer">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/textInputEditTextPostInputFragmentDestination"
@@ -113,8 +133,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:boxBackgroundMode="outline"
             android:clickable="false"
+            app:boxBackgroundMode="outline"
             app:layout_constraintBottom_toTopOf="@id/constraintLayout3"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayoutPostInputFragmentOverviewDescription"
             tools:layout_editor_absoluteX="16dp">
@@ -124,9 +144,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:inputType="none"
                 android:clickable="true"
                 android:hint="Choose Tag"
+                android:inputType="none"
                 android:padding="16dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -163,6 +183,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Load Image"
+                app:backgroundTint="@color/primary_orange"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -209,9 +230,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Submit"
+            app:backgroundTint="@color/primary_orange"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

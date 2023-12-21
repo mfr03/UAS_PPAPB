@@ -1,30 +1,33 @@
-package com.example.uas_ppapb_v2.view.fragment.user
+package com.example.uas_ppapb_v2.view.fragment.user.dialog
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import com.example.uas_ppapb_v2.R
 import com.example.uas_ppapb_v2.app.CustomApp
 import com.example.uas_ppapb_v2.database.model.PlannedPost
 import com.example.uas_ppapb_v2.database.model.Post
 import com.example.uas_ppapb_v2.databinding.BottomSheetDialogBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 
-class BottomSheetDialog(private val post: Post, private val onSuccess: () -> Unit): BottomSheetDialogFragment() {
+class BottomSheetDialog(private val post: Post, private val onSuccess: (PlannedPost) -> Unit): BottomSheetDialogFragment() {
 
     private val binding by lazy {
         BottomSheetDialogBinding.inflate(layoutInflater)
     }
     private var selectTime: String = ""
     private var selectDate: String = ""
+    private var departureDate: String = ""
+    private var departureTime: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,8 +49,14 @@ class BottomSheetDialog(private val post: Post, private val onSuccess: () -> Uni
                 if(event.action == MotionEvent.ACTION_UP) {
                     val rightDrawable = (v as AutoCompleteTextView).compoundDrawables[2]
                     if(event.rawX >= (v.right - rightDrawable.bounds.width())) {
-                        showTimePickerDialog(setNotificationTime, true)
+
+                        if(departureDate == "" || departureTime == "") {
+                            Snackbar.make(root, "Please select date and time", Snackbar.LENGTH_SHORT).show()
+                        } else {
+                            showDatePickerDialog(setNotificationTime, true)
+                        }
                         return@setOnTouchListener true
+
                     }
                 }
                 false
@@ -75,28 +84,40 @@ class BottomSheetDialog(private val post: Post, private val onSuccess: () -> Uni
             }
 
             button2.setOnClickListener {
-                roomDBManager.insertPlannedPost(
-                    PlannedPost(
-                        id = post.id,
-                        userUID = roomDBManager.getUID(),
-                        destination = post.destination,
-                        startingStation = post.startingStation,
-                        endStation = post.endStation,
-                        overviewDescription = post.overviewDescription,
-                        shortDescription = post.shortDescription,
-                        price = post.price,
-                        lengthOfStay = post.lengthOfStay,
-                        imageURI = post.imageURI,
-                        tag = post.tag,
-                        plannedDate = inputDate.text.toString(),
-                        plannedTime = inputTime.text.toString(),
-                        notificationTime = selectTime,
-                        notificationDate = selectDate
-                    )
+                val plannedPost = PlannedPost(
+                    id = post.id,
+                    userUID = roomDBManager.getUID(),
+                    destination = post.destination,
+                    startingStation = post.startingStation,
+                    endStation = post.endStation,
+                    overviewDescription = post.overviewDescription,
+                    shortDescription = post.shortDescription,
+                    price = post.price,
+                    lengthOfStay = post.lengthOfStay,
+                    imageURI = post.imageURI,
+                    tag = post.tag,
+                    plannedDate = inputDate.text.toString(),
+                    plannedTime = inputTime.text.toString(),
+                    notificationTime = selectTime,
+                    notificationDate = selectDate
                 )
-                onSuccess()
+                roomDBManager.insertPlannedPost(plannedPost)
+                onSuccess(plannedPost)
                 dismiss()
             }
+        }
+    }
+    private fun calculateTimeInMillis(targetDateTime: String): Long {
+
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm")
+        Log.d("TAG", "calculateTimeInMillis: $targetDateTime")
+        try {
+            val targetDate = dateFormat.parse(targetDateTime)
+            return targetDate.time
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return -1
         }
     }
 
@@ -108,16 +129,22 @@ class BottomSheetDialog(private val post: Post, private val onSuccess: () -> Uni
 
         val datePickerDialog = DatePickerDialog(this.requireContext(), DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
             val selectedDate = "$dayOfMonth/${monthOfYear + 1}/$year"
+
+
             if(!planned) {
+                departureDate = selectedDate
                 element.setText(selectedDate)
             } else {
                 selectDate = selectedDate
-                element.setText("$selectedDate || $selectTime")
+                showTimePickerDialog(element, true)
             }
 
         }, year, month, day)
         if(!planned) {
             datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000
+        } else {
+            Log.d("TAG", "showDatePickerDialog: ${calculateTimeInMillis("$departureDate $departureTime")}")
+            datePickerDialog.datePicker.maxDate =  calculateTimeInMillis("$departureDate $departureTime")
         }
         datePickerDialog.show()
     }
@@ -130,19 +157,29 @@ class BottomSheetDialog(private val post: Post, private val onSuccess: () -> Uni
         val timePickerDialog = TimePickerDialog(
             requireContext(),
             TimePickerDialog.OnTimeSetListener { _, i, i2 ->
-                if(i2 < 10) {
-                    val selectedTime = "$i:0$i2"
-                    element.setText(selectedTime)
+                var selectedTime: String = ""
+                if(i < 10) {
+                    if(i2 < 10) {
+                        selectedTime = "0$i:0$i2"
+                    } else {
+                        selectedTime = "0$i:$i2"
+                    }
                 } else {
-                    val selectedTime = "$i:$i2"
-                    element.setText(selectedTime)
+                    if(i2 < 10) {
+                        selectedTime = "$i:0$i2"
+                    } else {
+                        selectedTime = "$i:$i2"
+                    }
                 }
+
 
                 if(planned) {
-                    selectTime = element.text.toString()
-                    showDatePickerDialog(element, true)
+                    selectTime = selectedTime
+                    element.setText("$selectDate || $selectTime")
+                } else {
+                    departureTime = selectedTime
+                    element.setText(selectedTime)
                 }
-
 
             },
             hour,

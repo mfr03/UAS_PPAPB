@@ -25,6 +25,7 @@ class CustomApp: Application() {
 
     // firebase
     private lateinit var firestore : FirebaseFirestore
+
     private val accountCollectionReference by lazy {
         firestore.collection("accounts")
     }
@@ -45,6 +46,10 @@ class CustomApp: Application() {
         FireStoreManager()
     }
 
+    // shared preferences
+    private val sessionManager by lazy {
+        SessionManager.getInstance(applicationContext)
+    }
     fun getAuthManager(): AuthenticationManager {
         return authenticationManager
     }
@@ -61,10 +66,6 @@ class CustomApp: Application() {
         return sessionManager.getUID()
     }
 
-    // shared preferences
-    private val sessionManager by lazy {
-        SessionManager.getInstance(applicationContext)
-    }
 
     override fun onCreate() {
         super.onCreate()
@@ -111,14 +112,12 @@ class CustomApp: Application() {
                             query ->
                         for(document in query) {
                             val data = document.data
-                            Log.d("ADMIN", data.get("username").toString())
                             temp.add(Triple(data.get("uid").toString(), data.get("username").toString(), data.get("email").toString()))
                         }
                         adminsLiveData.postValue(temp)
                         onSuccess(adminsLiveData)
                     }
             }
-
         }
 
         fun returnAccount(): Account {
@@ -143,7 +142,6 @@ class CustomApp: Application() {
             } else {
                 onFailed(java.lang.Exception("You are not an admin"))
             }
-
         }
 
         fun logout() {
@@ -205,8 +203,7 @@ class CustomApp: Application() {
 
 
         private fun makeAccountFirebase(email: String, password: String, username: String, dateOfBirth: String, nim: String, bypass: Boolean = false,
-        onSuccess: () -> Unit, onFailed: (Exception) -> Unit){
-            // TODO("NEED TO IMPLEMENT A CHECK ON ADDING TO FIREBASE")
+        onSuccess: () -> Unit, onFailed: (Exception) -> Unit) {
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener { user ->
                     val account: Account
@@ -347,14 +344,11 @@ class CustomApp: Application() {
         private val accountRoomDao = database!!.accountRoomDAO()!!
         private val plannedPostDao = database!!.plannedPostDAO()!!
         private val executorService = Executors.newSingleThreadExecutor()
-
-
         fun insertAccountRoom() {
             executorService.execute {
                 accountRoomDao.insertAccountRoom(AccountRoom(getUID()))
             }
         }
-
         fun getUID(): String {
             return getAccountUID()
         }

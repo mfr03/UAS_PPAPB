@@ -1,4 +1,4 @@
-package com.example.uas_ppapb_v2.view.fragment.user
+package com.example.uas_ppapb_v2.view.fragment.user.dialog
 
 import android.os.Bundle
 import android.view.LayoutInflater

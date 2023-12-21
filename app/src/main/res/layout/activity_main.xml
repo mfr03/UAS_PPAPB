@@ -14,7 +14,9 @@
         android:text="Hello World!"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tabIndicatorColor="@color/primary_orange"
+        app:tabTextColor="@color/secondary_orange" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"

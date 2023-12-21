@@ -6,13 +6,22 @@
     android:layout_height="match_parent"
     tools:context=".activity.DashboardAdminActivity">
 
+    <View
+        android:id="@+id/view"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@color/primary_text_gray"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation_view_admin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <fragment
         android:id="@+id/nav_host_fragment_admin"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:defaultNavHost="true"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation_view_admin"
+        app:layout_constraintBottom_toTopOf="@+id/view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -20,12 +29,17 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation_view_admin"
-        app:menu="@menu/bottom_navigation_menu_admin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:itemActiveIndicatorStyle="@style/CustomBottomNavView.Indicator"
+        app:itemIconTint="@color/primary_orange"
+        app:itemTextColor="@color/primary_orange"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_navigation_menu_admin" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

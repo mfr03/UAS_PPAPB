@@ -10,11 +10,16 @@ import coil.load
 import com.example.uas_ppapb_v2.R
 import com.example.uas_ppapb_v2.app.CustomApp
 import com.example.uas_ppapb_v2.database.model.FavoritePost
+import com.example.uas_ppapb_v2.database.model.PlannedPost
 import com.example.uas_ppapb_v2.databinding.ActivityPostBinding
 import com.example.uas_ppapb_v2.notifications.AlarmReceiver
-import com.example.uas_ppapb_v2.view.fragment.user.BottomSheetDialog
+import com.example.uas_ppapb_v2.view.fragment.user.dialog.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
+import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class PostActivity : AppCompatActivity() {
 
@@ -55,7 +60,7 @@ class PostActivity : AppCompatActivity() {
                 itemDestination.text = post.destination
                 startAndEnd.text = post.startingStation + " to " + post.endStation
                 overviewDescription.text = post.overviewDescription
-                price.text = "Rp. " + post.price.toString()
+                price.text = "Rp. " + NumberFormat.getNumberInstance(Locale.US).format(post.price).toString()
                 inDateDay.text = currentDate[0].toString()
                 inDateDayInWeek.text = dayInWeek[currentDate[1] - 1]
                 inDateMonthYear.text = month[currentDate[2] - 1]  + " " + currentDate[3].toString()
@@ -106,7 +111,6 @@ class PostActivity : AppCompatActivity() {
                             userUID = roomDBManager.getUID()
                         )
                     )
-                    scheduleNotifications(10000)
                     favorited = false
                     favoriteButton.setImageDrawable(getDrawable(R.drawable.baseline_favorite_border_36))
                     Snackbar.make(root, "Removed from favorites", Snackbar.LENGTH_SHORT).show()
@@ -115,6 +119,7 @@ class PostActivity : AppCompatActivity() {
             addToPlanButton.setOnClickListener {
                 val bottomSheetFragment = BottomSheetDialog(post) {
                     Snackbar.make(root, "Added to plan", Snackbar.LENGTH_SHORT).show()
+                    scheduleNotifications(calculateTimeDifference("${it.notificationDate} ${it.notificationTime}"), it)
                 }
                 bottomSheetFragment.show(supportFragmentManager, "BottomSheetDialog")
             }
@@ -122,12 +127,36 @@ class PostActivity : AppCompatActivity() {
 
     }
 
-    private fun scheduleNotifications(timeInMillis: Long) {
+    private fun scheduleNotifications(timeInMillis: Long, plannedPost: PlannedPost) {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(this, AlarmReceiver::class.java)
+        intent.putExtra("plan", true)
+        intent.putExtra("title", "Notifikasi Pemesanan menuju ${plannedPost.destination}")
+        intent.putExtra("content", "Waktunya anda berangkat menuju ${plannedPost.destination} sudah tiba!")
         val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
+    }
+
+
+    private fun calculateTimeDifference(targetDateTime: String): Long {
+
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm")
+
+        try {
+            val targetDate = dateFormat.parse(targetDateTime)
+            val currentDate = Date()
+
+            if(targetDate.time - currentDate.time >= 0) {
+                return targetDate.time - currentDate.time
+            } else {
+                return 0
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return -1
+        }
     }
 
     private fun checkIfBeenFavorited() {

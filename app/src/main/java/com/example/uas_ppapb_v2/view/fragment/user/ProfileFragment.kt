@@ -8,13 +8,14 @@ import android.view.ViewGroup
 import com.example.uas_ppapb_v2.R
 import com.example.uas_ppapb_v2.app.CustomApp
 import com.example.uas_ppapb_v2.databinding.FragmentProfileBinding
+import com.example.uas_ppapb_v2.databinding.FragmentProfileV2Binding
 
 
 class ProfileFragment : Fragment() {
 
 
-    private val binding: FragmentProfileBinding by lazy {
-        FragmentProfileBinding.inflate(layoutInflater)
+    private val binding: FragmentProfileV2Binding by lazy {
+        FragmentProfileV2Binding.inflate(layoutInflater)
     }
 
     override fun onCreateView(

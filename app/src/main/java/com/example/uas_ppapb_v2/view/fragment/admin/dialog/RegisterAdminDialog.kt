@@ -1,4 +1,4 @@
-package com.example.uas_ppapb_v2.view.fragment.admin
+package com.example.uas_ppapb_v2.view.fragment.admin.dialog
 
 import android.app.DatePickerDialog
 import android.os.Bundle
@@ -53,7 +53,6 @@ class RegisterAdminDialog(private val onSuccess: () -> Unit): BottomSheetDialogF
                     Snackbar.make(binding.root, "Mohon isi bagan yang kosong", Snackbar.LENGTH_SHORT).setAnchorView(registerButton).show()
                 } else {
                     if(checkValidity(inputEmail.text.toString(), inputTanggalLahir.text.toString())) {
-                        // TODO("NEED TO IMPLEMENT FAILED OR SUCCESS CHECK ON REGISTER ACCOUNT")
                         auth.registerAccount(inputEmail.text.toString(), inputPassword.text.toString(), inputUsername.text.toString(), inputTanggalLahir.text.toString(), inputNim.text.toString(),
                             bypass = true,
                             onSuccess = {

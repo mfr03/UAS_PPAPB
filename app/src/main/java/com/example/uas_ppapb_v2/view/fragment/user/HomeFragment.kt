@@ -53,8 +53,8 @@ class HomeFragment : Fragment() {
                 currentTag = "Tours"
                 observe()
             }
-            rentalsTab.setOnClickListener {
-                currentTag = "Rentals"
+            popularTab.setOnClickListener {
+                currentTag = "Popular"
                 observe()
             }
             observe()
@@ -65,7 +65,9 @@ class HomeFragment : Fragment() {
         }
     }
 
-    fun observe() {
+
+
+    private fun observe() {
         with(binding){
             fireStoreManager.returnPostLiveData().observe(viewLifecycleOwner) {
                     post ->
@@ -85,11 +87,6 @@ class HomeFragment : Fragment() {
                         "Tours" -> {
                             allowedPost = post.filter { item ->
                                 item.tag == "Tours"
-                            }
-                        }
-                        "Rentals" -> {
-                            allowedPost = post.filter { item ->
-                                item.tag == "Rentals"
                             }
                         }
                         else -> {

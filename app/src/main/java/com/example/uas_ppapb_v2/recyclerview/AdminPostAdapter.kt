@@ -14,6 +14,7 @@ class AdminPostAdapter (private val postList: List<Post>, private val onEdit: (P
             with(binding) {
                 destination.text = post.destination
                 shortdesc.text = post.shortDescription
+
                 editPost.setOnClickListener {
                     onEdit(post)
                 }

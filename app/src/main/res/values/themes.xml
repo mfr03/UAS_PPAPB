@@ -24,6 +24,9 @@
         <item name="android:color">@color/tertiary_orange</item>
     </style>
 
+    <style name="CustomBottomNavView.TextActive" parent="TextAppearance.Material3.LabelMedium">
+        <item name="android:color">@color/primary_orange</item>
+    </style>
 
 
     <style name="Text.Normal" parent="Widget.MaterialComponents.TextView">

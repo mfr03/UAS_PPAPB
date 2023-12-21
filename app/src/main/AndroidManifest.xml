@@ -28,7 +28,6 @@
         <activity
             android:name=".activity.DashboardActivity"
             android:exported="false"
-            android:theme="@style/Theme.UAS_PPAPB_V2.WithActionBar"
             android:windowSoftInputMode="adjustResize|stateHidden"
             />
         <activity

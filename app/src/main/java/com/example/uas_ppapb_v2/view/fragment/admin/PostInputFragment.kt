@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.navigation.fragment.findNavController
+import coil.load
 import com.example.uas_ppapb_v2.R
 import com.example.uas_ppapb_v2.app.CustomApp
 import com.example.uas_ppapb_v2.database.model.Post
@@ -49,6 +50,10 @@ class PostInputFragment : Fragment() {
                         textInputEditTextPostInputFragmentDate.setText(post.lengthOfStay.toString())
                         uri.setText(post.imageURI)
                         autoCompletePostInputFragmentTag.setText(post.tag, false)
+                        imageView5.load(post.imageURI) {
+                            crossfade(true)
+                            crossfade(500)
+                        }
                     }
                 }
             }
@@ -63,9 +68,14 @@ class PostInputFragment : Fragment() {
 
             autoCompletePostInputFragmentTag.setOnItemClickListener { parent, _, i, _ ->
                 selectedTag = parent.getItemAtPosition(i).toString()
-                Log.d("tags", selectedTag)
             }
 
+            loadImage.setOnClickListener {
+                imageView5.load(uri.text.toString()) {
+                    crossfade(true)
+                    crossfade(500)
+                }
+            }
 
 
             submit.setOnClickListener {
@@ -80,13 +90,23 @@ class PostInputFragment : Fragment() {
                     imageURI = uri.text.toString(),
                     tag = selectedTag
                 )
+                if(arguments?.isEmpty != true) {
+                    post.id = arguments?.getString("postID").toString()
+                    fireStoreManager.updatePost(post, onSuccess = {
+                        Snackbar.make(root, "Post updated", Snackbar.LENGTH_SHORT).show()
+                        findNavController().navigate(R.id.action_postInputFragment_to_dashboardAdminFragment)
+                    }, onFailed = {
+                        Snackbar.make(root, "Failed to be updated", Snackbar.LENGTH_SHORT).show()
+                    })
+                } else {
+                    fireStoreManager.addPost(post, onSuccess = {
+                        Snackbar.make(root, "Post added", Snackbar.LENGTH_SHORT).show()
+                        findNavController().navigate(R.id.action_postInputFragment_to_dashboardAdminFragment)
+                    }, onFailed = {
+                        Snackbar.make(root, "Failed to be added", Snackbar.LENGTH_SHORT).show()
+                    })
+                }
 
-                fireStoreManager.addPost(post, onSuccess = {
-                    Snackbar.make(root, "Post added", Snackbar.LENGTH_SHORT).show()
-                    findNavController().navigate(R.id.action_postInputFragment_to_dashboardAdminFragment)
-                }, onFailed = {
-                    Snackbar.make(root, "Failed to be added", Snackbar.LENGTH_SHORT).show()
-                 })
             }
         }
     }

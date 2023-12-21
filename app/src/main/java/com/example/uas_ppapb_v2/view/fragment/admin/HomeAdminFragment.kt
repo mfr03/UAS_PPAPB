@@ -11,7 +11,7 @@ import com.example.uas_ppapb_v2.R
 import com.example.uas_ppapb_v2.app.CustomApp
 import com.example.uas_ppapb_v2.databinding.FragmentHomeAdminBinding
 import com.example.uas_ppapb_v2.recyclerview.AdminPostAdapter
-import com.example.uas_ppapb_v2.view.fragment.user.ConformationDialog
+import com.example.uas_ppapb_v2.view.fragment.user.dialog.ConformationDialog
 import com.google.android.material.snackbar.Snackbar
 
 class HomeAdminFragment : Fragment() {
