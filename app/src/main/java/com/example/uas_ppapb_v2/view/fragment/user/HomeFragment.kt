@@ -27,6 +27,8 @@ class HomeFragment : Fragment() {
     }
     private var allowedPost: List<Post>? = null
     private var currentTag: String? = null
+    private val tags = resources.getStringArray(R.array.tags).toList()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,23 +40,24 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         fireStoreManager.getAllPost()
         with(binding) {
 
             stayTab.setOnClickListener {
-                currentTag = "Stays"
+                currentTag = tags[0]
                 observe()
             }
             activitiesTab.setOnClickListener {
-                currentTag = "Activities"
+                currentTag = tags[1]
                 observe()
             }
             toursTab.setOnClickListener {
-                currentTag = "Tours"
+                currentTag = tags[2]
                 observe()
             }
             popularTab.setOnClickListener {
-                currentTag = "Popular"
+                currentTag = tags[3]
                 observe()
             }
             observe()
@@ -76,17 +79,17 @@ class HomeFragment : Fragment() {
                     when(currentTag) {
                         "Stays" -> {
                             allowedPost = post.filter { item ->
-                                item.tag == "Stays"
+                                item.tag == tags[0]
                             }
                         }
                         "Activities" -> {
                             allowedPost = post.filter { item ->
-                                item.tag == "Activities"
+                                item.tag == tags[1]
                             }
                         }
                         "Tours" -> {
                             allowedPost = post.filter { item ->
-                                item.tag == "Tours"
+                                item.tag == tags[2]
                             }
                         }
                         else -> {

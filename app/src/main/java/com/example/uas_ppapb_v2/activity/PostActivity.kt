@@ -16,6 +16,7 @@ import com.example.uas_ppapb_v2.notifications.AlarmReceiver
 import com.example.uas_ppapb_v2.view.fragment.user.dialog.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import java.text.NumberFormat
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -153,7 +154,7 @@ class PostActivity : AppCompatActivity() {
                 return 0
             }
 
-        } catch (e: Exception) {
+        } catch (e: ParseException) {
             e.printStackTrace()
             return -1
         }

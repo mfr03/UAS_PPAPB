@@ -89,6 +89,9 @@ class CustomApp: Application() {
 
     inner class AuthenticationManager() {
 
+        private val collectionFieldType: String = "type";
+        private val fieldAdmin: String = "admin";
+
         private val adminsLiveData: MutableLiveData<List<Triple<String, String, String>>> by lazy {
             MutableLiveData<List<Triple<String, String, String>>>()
         }
@@ -107,7 +110,7 @@ class CustomApp: Application() {
         fun getAdmins(onSuccess: (MutableLiveData<List<Triple<String, String, String>>>) -> Unit) {
             val temp: MutableList<Triple<String, String, String>> = mutableListOf()
             if(sessionManager.isAdmin()) {
-                accountCollectionReference.whereEqualTo("type", "admin").get()
+                accountCollectionReference.whereEqualTo(collectionFieldType, fieldAdmin).get()
                     .addOnSuccessListener {
                             query ->
                         for(document in query) {
@@ -185,7 +188,7 @@ class CustomApp: Application() {
                                 val data = document.documents[0].data
                                 if(data?.get("type") == "user") {
                                     onSuccess(false)
-                                } else if(data?.get("type") == "admin") {
+                                } else if(data?.get(collectionFieldType) == fieldAdmin) {
                                     onSuccess(true)
                                 } else {
                                     onFailed(Exception("Account type not found"))

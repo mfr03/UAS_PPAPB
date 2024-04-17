@@ -15,6 +15,7 @@ import com.example.uas_ppapb_v2.database.model.Post
 import com.example.uas_ppapb_v2.databinding.BottomSheetDialogBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.snackbar.Snackbar
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -115,7 +116,7 @@ class BottomSheetDialog(private val post: Post, private val onSuccess: (PlannedP
             val targetDate = dateFormat.parse(targetDateTime)
             return targetDate.time
 
-        } catch (e: Exception) {
+        } catch (e: ParseException) {
             e.printStackTrace()
             return -1
         }
